@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flappy Bird Entertainment</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Flappy Bird Challenge</h1>
+        <canvas id="gameCanvas" width="400" height="600"></canvas>
+        <div id="scoreboard">
+            <h2>Top 3 Scores</h2>
+            <ul id="topScores"></ul>
+        </div>
+        <div id="attempts">
+            <span id="attemptsLeft">Attempts left: 3</span>
+        </div>
+        <div id="startDialog" style="display:none;" class="dialog">
+            <h2 id="countdownText">3</h2>
+        </div>
+        <button id="startBtn" class="center-btn">Start Game</button>
+        <button id="nextPlayerBtn" style="display:none;">Next Player</button>
+    </div>
+    <script src="game.js"></script>
+</body>
+</html>

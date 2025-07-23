@@ -1,0 +1,57 @@
+body {
+    background: #000000;
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-image: url('sky-texture.jpg');
+    background-size: cover;
+}
+.container {
+    width: 550px;
+    margin: 30px auto;
+    background: #fff;
+    border-radius: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    padding: 20px;
+    text-align: center;
+}
+canvas {
+    display: block;
+    margin: 0 auto 20px auto;
+    /* Pillar color is set in JS, update game.js to use black for pipes */
+}
+#scoreboard {
+    margin-bottom: 10px;
+}
+#attempts {
+    margin-bottom: 10px;
+    font-size: 1.1em;
+}
+button {
+    padding: 10px 20px;
+    font-size: 1em;
+    margin: 5px;
+    border: none;
+    border-radius: 5px;
+    background: rgba(240,73,53,var(--tw-bg-opacity,1));
+    color: #fff;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+.center-btn {
+    display: block;
+    margin: 30px auto 0 auto;
+}
+.dialog {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.95);
+    padding: 0px 50px;
+    border-radius: 12px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 10;
+    text-align: center;
+    font-size: 2em;
+}
