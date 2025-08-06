@@ -98,12 +98,12 @@ function update() {
     }
     // Pipes (side-scroller, move left)
     if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 200) {
-        let gap = Math.floor(Math.random() * (250 - 160 + 1)) + 160;
+        let gap = Math.floor(Math.random() * (230 - 150 + 1)) + 150;
         let top = Math.random() * (canvas.height - gap - 100) + 50;
         pipes.push({ x: canvas.width, top: top, bottom: top + gap, w: 50 });
     }
     for (let pipe of pipes) {
-        pipe.x -= 2;
+        pipe.x -= 3; // Move pipes left
     }
     // Remove off-screen pipes
     pipes = pipes.filter(pipe => pipe.x + pipe.w > 0);
@@ -138,9 +138,20 @@ function drawBmanPillar(x, y, w, h) {
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-    // Bird
-    if (birdImg && birdImg.complete) {
-        ctx.drawImage(birdImg, bird.x, bird.y, bird.w, bird.h);
+    // Bird - draw at natural size if possible, or integer scale
+    if (birdImg && birdImg.complete && birdImg.width && birdImg.height) {
+        ctx.imageSmoothingEnabled = true;
+        let scale = Math.max(1, Math.floor(bird.w / birdImg.width));
+        let drawW = birdImg.width * scale;
+        let drawH = birdImg.height * scale;
+        // If bird.w/h is smaller than image, just use image size
+        if (drawW > bird.w || drawH > bird.h) {
+            drawW = bird.w;
+            drawH = bird.h;
+        }
+        let offsetX = bird.x + (bird.w - drawW) / 2;
+        let offsetY = bird.y + (bird.h - drawH) / 2;
+        ctx.drawImage(birdImg, offsetX, offsetY, drawW, drawH);
     } else if (birdImg) {
         birdImg.onload = function() {
             ctx.drawImage(birdImg, bird.x, bird.y, bird.w, bird.h);
