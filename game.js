@@ -9,6 +9,10 @@ const startDialog = document.getElementById('startDialog');
 const countdownText = document.getElementById('countdownText');
 
 let bird, pipes, score, gameActive, gravity, jump;
+let showReact = false;
+let reactTimeout = null;
+let reactEmojis = ['👍', '😍', '🎉', '👏', '🔥', '😃'];
+let currentReact = '👍';
 let playerAttempts = 0;
 let playerScores = [];
 let topScores = [];
@@ -98,12 +102,12 @@ function update() {
     }
     // Pipes (side-scroller, move left)
     if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 200) {
-        let gap = Math.floor(Math.random() * (230 - 150 + 1)) + 150;
+        let gap = Math.floor(Math.random() * (250 - 160 + 1)) + 160;
         let top = Math.random() * (canvas.height - gap - 100) + 50;
         pipes.push({ x: canvas.width, top: top, bottom: top + gap, w: 50 });
     }
     for (let pipe of pipes) {
-        pipe.x -= 3; // Move pipes left
+        pipe.x -= 2; // Move pipes left
     }
     // Remove off-screen pipes
     pipes = pipes.filter(pipe => pipe.x + pipe.w > 0);
@@ -121,6 +125,11 @@ function update() {
         if (!pipe.passed && pipe.x + pipe.w < bird.x) {
             score++;
             pipe.passed = true;
+            // Show a random react emoji above the bird
+            currentReact = reactEmojis[Math.floor(Math.random() * reactEmojis.length)];
+            showReact = true;
+            if (reactTimeout) clearTimeout(reactTimeout);
+            reactTimeout = setTimeout(() => { showReact = false; }, 700);
         }
     }
 }
@@ -166,6 +175,14 @@ function draw() {
     ctx.fillStyle = '#000';
     ctx.font = '32px Arial';
     ctx.fillText(score, canvas.width/2 - 10, 50);
+
+    // React emoji above bird on score
+    if (showReact) {
+        ctx.font = '40px Arial';
+        ctx.globalAlpha = 0.9;
+        ctx.fillText(currentReact, bird.x + bird.w/2 - 15, bird.y - 10);
+        ctx.globalAlpha = 1.0;
+    }
 }
 
 function endGame() {
