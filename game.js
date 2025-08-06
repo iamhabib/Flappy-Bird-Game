@@ -21,7 +21,7 @@ function resetGame() {
     pipes = [];
     score = 0;
     gravity = 0.5;
-    jump = -10; // Easier: stronger jump
+    jump = -9; // Easier: stronger jump
     gameActive = false;
     startBtn.style.display = 'inline-block';
     nextPlayerBtn.style.display = 'none';
@@ -78,7 +78,7 @@ function update() {
     }
     // Pipes
     if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 200) {
-        let gap = 170; // Easier: increased gap
+        let gap = Math.floor(Math.random() * (250 - 160 + 1)) + 160; // Easier: increased gap
         let top = Math.random() * (canvas.height - gap - 100) + 50;
         pipes.push({ x: canvas.width, top: top, bottom: top + gap, w: 50 });
     }

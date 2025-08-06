@@ -7,11 +7,9 @@ body {
     background-size: cover;
 }
 .container {
-    width: 550px;
+    width: 1000px;
     margin: 30px auto;
-    background: #fff;
     border-radius: 10px;
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
     padding: 20px;
     text-align: center;
 }
