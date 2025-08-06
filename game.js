@@ -9,19 +9,33 @@ const startDialog = document.getElementById('startDialog');
 const countdownText = document.getElementById('countdownText');
 
 let bird, pipes, score, gameActive, gravity, jump;
-let playerAttempts, playerScores;
+let playerAttempts = 0;
+let playerScores = [];
 let topScores = [];
 const attemptLimit = 3;
 
 let birdImg = new Image();
 birdImg.src = 'actor.png';
+let bmanImg = new Image();
+bmanImg.src = 'biman.png';
+bmanImg.onerror = function() {
+    console.error('bman.png not found or failed to load. Please check the filename and location.');
+};
+
+// If plance.gif is a GIF, browsers won't animate it in canvas. We'll use a sprite sheet approach for animation.
+// If you only have a GIF, convert it to a horizontal sprite sheet (e.g. using ezgif.com/split or similar).
+// We'll default to 4 frames, but you can change PLANE_FRAMES below to match your sprite sheet.
+const PLANE_FRAMES = 4; // Number of frames in your sprite sheet
+const PLANE_FPS = 10; // Animation speed
+let planeFrame = 0;
+let planeFrameTick = 0;
 
 function resetGame() {
     bird = { x: 50, y: 300, w: 30, h: 30, velocity: 0 };
     pipes = [];
     score = 0;
     gravity = 0.5;
-    jump = -9; // Easier: stronger jump
+    jump = -9;
     gameActive = false;
     startBtn.style.display = 'inline-block';
     nextPlayerBtn.style.display = 'none';
@@ -63,6 +77,12 @@ function beginGame() {
 
 function gameLoop() {
     if (!gameActive) return;
+    // Animate plane sprite
+    planeFrameTick++;
+    if (planeFrameTick >= 60 / PLANE_FPS) {
+        planeFrame = (planeFrame + 1) % PLANE_FRAMES;
+        planeFrameTick = 0;
+    }
     update();
     draw();
     if (gameActive) requestAnimationFrame(gameLoop);
@@ -76,14 +96,14 @@ function update() {
         endGame();
         return;
     }
-    // Pipes
+    // Pipes (side-scroller, move left)
     if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 200) {
-        let gap = Math.floor(Math.random() * (250 - 160 + 1)) + 160; // Easier: increased gap
+        let gap = Math.floor(Math.random() * (250 - 160 + 1)) + 160;
         let top = Math.random() * (canvas.height - gap - 100) + 50;
         pipes.push({ x: canvas.width, top: top, bottom: top + gap, w: 50 });
     }
     for (let pipe of pipes) {
-        pipe.x -= 2; // Easier: slower pipe speed
+        pipe.x -= 2;
     }
     // Remove off-screen pipes
     pipes = pipes.filter(pipe => pipe.x + pipe.w > 0);
@@ -105,25 +125,14 @@ function update() {
     }
 }
 
-function drawStonePillar(x, y, w, h) {
-    // Colorful stone effect using gradient and colored circles
-    let grad = ctx.createLinearGradient(x, y, x + w, y + h);
-    grad.addColorStop(0, '#ffb347'); // orange
-    grad.addColorStop(0.5, '#87ceeb'); // blue
-    grad.addColorStop(1, '#90ee90'); // green
-    ctx.fillStyle = grad;
-    ctx.fillRect(x, y, w, h);
-    // Add some "stones" as colored circles
-    const colors = ['#fff', '#ff69b4', '#ffd700', '#00bfff', '#32cd32', '#ffa500'];
-    for (let i = 0; i < 6; i++) {
-        let stoneX = x + Math.random() * (w - 12);
-        let stoneY = y + Math.random() * (h - 12);
-        ctx.beginPath();
-        ctx.arc(stoneX, stoneY, 6 + Math.random() * 4, 0, 2 * Math.PI);
-        ctx.fillStyle = colors[Math.floor(Math.random() * colors.length)];
-        ctx.fill();
-        ctx.strokeStyle = '#666';
-        ctx.stroke();
+function drawBmanPillar(x, y, w, h) {
+    if (!bmanImg.complete || bmanImg.width === 0) {
+        return;
+    }
+    let tileH = bmanImg.height * (w / bmanImg.width); // maintain aspect ratio
+    for (let offsetY = y; offsetY < y + h; offsetY += tileH) {
+        let drawH = Math.min(tileH, y + h - offsetY);
+        ctx.drawImage(bmanImg, x, offsetY, w, drawH);
     }
 }
 
@@ -139,11 +148,11 @@ function draw() {
     }
     // Pillars (obstacles)
     for (let pipe of pipes) {
-        drawStonePillar(pipe.x, 0, pipe.w, pipe.top);
-        drawStonePillar(pipe.x, pipe.bottom, pipe.w, canvas.height - pipe.bottom);
+        drawBmanPillar(pipe.x, 0, pipe.w, pipe.top); // top pillar
+        drawBmanPillar(pipe.x, pipe.bottom, pipe.w, canvas.height - pipe.bottom); // bottom pillar
     }
     // Score
-    ctx.fillStyle = '#000'; // Black score text
+    ctx.fillStyle = '#000';
     ctx.font = '32px Arial';
     ctx.fillText(score, canvas.width/2 - 10, 50);
 }
