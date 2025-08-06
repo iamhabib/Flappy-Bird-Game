@@ -101,7 +101,7 @@ function update() {
         return;
     }
     // Pipes (side-scroller, move left)
-    if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 200) {
+    if (pipes.length === 0 || pipes[pipes.length-1].x < canvas.width - 220) {
         let gap = Math.floor(Math.random() * (250 - 160 + 1)) + 160;
         let top = Math.random() * (canvas.height - gap - 100) + 50;
         pipes.push({ x: canvas.width, top: top, bottom: top + gap, w: 50 });
